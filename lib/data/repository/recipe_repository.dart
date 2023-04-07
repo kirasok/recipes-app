@@ -1,11 +1,11 @@
 import 'package:cooklang/cooklang.dart';
 
-class StudentRepository {
-  static final StudentRepository _instance = StudentRepository._();
+class RecipeRepository {
+  static final RecipeRepository _instance = RecipeRepository._();
 
-  StudentRepository._();
+  RecipeRepository._();
 
-  factory StudentRepository() => _instance;
+  factory RecipeRepository() => _instance;
 
   List<String> source = [
     """
