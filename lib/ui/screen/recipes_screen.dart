@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/logic/cubit/recipes_cubit.dart';
@@ -12,8 +10,6 @@ class RecipesScreen extends StatefulWidget {
 }
 
 class _RecipesScreenState extends State<RecipesScreen> {
-  List<FileSystemEntity> data = [];
-
   @override
   Widget build(BuildContext context) => BlocProvider<RecipesCubit>(
         create: (context) => RecipesCubit(),
@@ -21,8 +17,8 @@ class _RecipesScreenState extends State<RecipesScreen> {
           builder: (context, state) {
             if (state is RecipesLoaded) {
               return ListView.separated(
-                  itemBuilder: (context, index) => ListTile(
-                      title: Text(state.recipes[index].metadata.values.first)),
+                  itemBuilder: (context, index) =>
+                      ListTile(title: Text(state.recipes[index].title)),
                   separatorBuilder: (context, index) => const Divider(),
                   itemCount: state.recipes.length);
             } else if (state is RecipesLoading) {

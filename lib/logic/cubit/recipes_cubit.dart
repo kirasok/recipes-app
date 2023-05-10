@@ -1,12 +1,12 @@
-import 'package:cooklang/cooklang.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
+import 'package:recipes/data/model/recipe.dart';
 import 'package:recipes/data/repository/recipe_repository.dart';
 
 abstract class RecipesState {}
 
 class RecipesLoaded extends RecipesState {
-  List<Recipe> recipes;
+  List<TitledRecipe> recipes;
   RecipesLoaded(this.recipes);
 }
 

@@ -1,5 +1,5 @@
-import 'package:cooklang/cooklang.dart';
 import 'package:flutter/services.dart';
+import 'package:recipes/data/model/recipe.dart';
 import 'package:recipes/data/storage/local_storage.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -16,12 +16,13 @@ class RecipesRepository {
 
   factory RecipesRepository() => _instance;
 
-  Future<List<Recipe>> get() async {
+  Future<List<TitledRecipe>> get() async {
     if (await LocalStorage().isEmpty()) await LocalStorage().seed();
-    final recipesRaw = await LocalStorage().getRecipes();
-    List<Recipe> recipes = [];
-    for (final recipe in recipesRaw) {
-      recipes.add(parseFromString(recipe));
+    final rawRecipes = await LocalStorage().getRecipes();
+    List<TitledRecipe> recipes = [];
+    for (final title in rawRecipes.keys) {
+      recipes.add(
+          TitledRecipe.parseFromStringTitled(title, rawRecipes[title] ?? ""));
     }
     return recipes;
   }

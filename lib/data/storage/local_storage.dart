@@ -21,13 +21,18 @@ class LocalStorage {
   final root = getApplicationDocumentsDirectory();
   late Directory recipesDir;
 
-  Future<List<String>> getRecipes() async {
+  Future<Map<String, String>> getRecipes() async {
     await root;
     _logger.d("Got dir ${recipesDir.listSync()}");
-    List<String> recipes = [];
-    for (final file in recipesDir.listSync(recursive: true).whereType<File>()) {
+    Map<String, String> recipes = {};
+    final files = recipesDir
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((element) => element.path.endsWith(".cook"));
+    for (final file in files) {
       final recipe = file.readAsStringSync();
-      recipes.add(recipe);
+      final title = file.path.split("/").last.replaceAll(".cook", "");
+      recipes[title] = recipe;
     }
     _logger.d("Read recipes: $recipes");
     return recipes;
