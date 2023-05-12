@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recipes/logic/cubit/navigation_cubit.dart';
+import 'package:recipes/logic/cubit/recipes_cubit.dart';
 import 'package:recipes/ui/screen/recipes_screen.dart';
 import 'package:recipes/ui/screen/shopping_list_screen.dart';
 
@@ -14,8 +15,11 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<NavigationCubit>(
-      create: (context) => NavigationCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<NavigationCubit>(create: (context) => NavigationCubit()),
+        BlocProvider<RecipesCubit>(create: (context) => RecipesCubit()),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Recipes"),

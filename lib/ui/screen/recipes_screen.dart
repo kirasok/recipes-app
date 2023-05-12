@@ -11,24 +11,21 @@ class RecipesScreen extends StatefulWidget {
 
 class _RecipesScreenState extends State<RecipesScreen> {
   @override
-  Widget build(BuildContext context) => BlocProvider<RecipesCubit>(
-        create: (context) => RecipesCubit(),
-        child: BlocBuilder<RecipesCubit, RecipesState>(
-          builder: (context, state) {
-            if (state is RecipesLoaded) {
-              return ListView.separated(
-                  itemBuilder: (context, index) =>
-                      ListTile(title: Text(state.recipes[index].title)),
-                  separatorBuilder: (context, index) => const Divider(),
-                  itemCount: state.recipes.length);
-            } else if (state is RecipesLoading) {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            } else {
-              return const Text("Something went wrong!");
-            }
-          },
-        ),
+  Widget build(BuildContext context) => BlocBuilder<RecipesCubit, RecipesState>(
+        builder: (context, state) {
+          if (state is RecipesLoaded) {
+            return ListView.separated(
+                itemBuilder: (context, index) =>
+                    ListTile(title: Text(state.recipes[index].title)),
+                separatorBuilder: (context, index) => const Divider(),
+                itemCount: state.recipes.length);
+          } else if (state is RecipesLoading) {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else {
+            return const Text("Something went wrong!");
+          }
+        },
       );
 }
