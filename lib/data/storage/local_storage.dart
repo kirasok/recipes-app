@@ -48,18 +48,29 @@ class LocalStorage {
   Future<void> seed() async {
     await root;
     _logger.d("Seeding recipes");
-    var assets = await rootBundle.loadString('AssetManifest.json');
-    var keys = jsonDecode(assets)
-        .keys
-        .where((element) => element.endsWith(".cook"))
-        .toList();
-    _logger.d("Got keys: $keys");
-    for (final key in keys) {
-      final filename = key.substring(7);
+    final assets =
+        jsonDecode(await rootBundle.loadString('AssetManifest.json')) as Map;
+    _logger.d("Got assets: $assets");
+
+    final cook =
+        assets.keys.where((element) => element.endsWith(".cook")).toList();
+    _logger.d("Got cook: $cook");
+    for (final String key in cook) {
+      final filename = key.substring(7); // Because key is recipes/file.cook
       _logger.d("Seeding $key");
       final content = await rootBundle.loadString(key);
       _logger.d("While seeding $key, found content: $content");
       write(filename, content);
+    }
+
+    final jpg =
+        assets.keys.where((element) => element.endsWith(".jpg")).toList();
+    _logger.d("Got jpg: $jpg");
+    for (final String key in jpg) {
+      final filename = key.substring(7); // Because key is recipes/file.cook
+      _logger.d("Seeding $key");
+      final content = await rootBundle.load(key);
+      writeByte(filename, content);
     }
   }
 
@@ -69,5 +80,15 @@ class LocalStorage {
     _logger.d("Writing file $filename with content $content");
     file.createSync(recursive: true);
     file.writeAsStringSync(content);
+  }
+
+  Future<void> writeByte(final String filename, final ByteData content) async {
+    await root;
+    final file = File("${recipesDir.path}/$filename");
+    _logger.d("Writing binary file $filename");
+    file.createSync();
+    final buffer = content.buffer;
+    file.writeAsBytesSync(
+        buffer.asUint8List(content.offsetInBytes, content.lengthInBytes));
   }
 }
