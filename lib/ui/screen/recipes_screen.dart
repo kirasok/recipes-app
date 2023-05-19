@@ -15,8 +15,21 @@ class _RecipesScreenState extends State<RecipesScreen> {
         builder: (context, state) {
           if (state is RecipesLoaded) {
             return ListView.separated(
-                itemBuilder: (context, index) =>
-                    ListTile(title: Text(state.recipes[index].title)),
+                itemBuilder: (context, index) {
+                  final image = state.recipes[index].images?.first;
+                  return SizedBox(
+                    child: ListTile(
+                        minLeadingWidth: 56,
+                        leading: image != null
+                            ? Image.memory(
+                                image,
+                                width: 56,
+                                height: 56,
+                              )
+                            : const SizedBox(),
+                        title: Text(state.recipes[index].title)),
+                  );
+                },
                 separatorBuilder: (context, index) => const Divider(),
                 itemCount: state.recipes.length);
           } else if (state is RecipesLoading) {

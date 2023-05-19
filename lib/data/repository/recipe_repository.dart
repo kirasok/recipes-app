@@ -19,10 +19,11 @@ class RecipesRepository {
   Future<List<TitledRecipe>> get() async {
     if (await LocalStorage().isEmpty()) await LocalStorage().seed();
     final rawRecipes = await LocalStorage().getRecipes();
+    final images = await LocalStorage().getImages();
     List<TitledRecipe> recipes = [];
     for (final title in rawRecipes.keys) {
-      recipes.add(
-          TitledRecipe.parseFromStringTitled(title, rawRecipes[title] ?? ""));
+      recipes.add(TitledRecipe.parseFromStringTitled(
+          title, rawRecipes[title] ?? "", images[title]));
     }
     return recipes;
   }

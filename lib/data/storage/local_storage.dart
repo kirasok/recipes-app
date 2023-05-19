@@ -21,14 +21,21 @@ class LocalStorage {
   final root = getApplicationDocumentsDirectory();
   late Directory recipesDir;
 
-  Future<Map<String, String>> getRecipes() async {
+  Future<Iterable<File>> _getFiles({String? endsWith}) async {
     await root;
     _logger.d("Got dir ${recipesDir.listSync()}");
+    final files = recipesDir.listSync(recursive: true).whereType<File>();
+    if (endsWith == null) {
+      return files;
+    } else {
+      return files.where((element) => element.path.endsWith(endsWith));
+    }
+  }
+
+  Future<Map<String, String>> getRecipes() async {
+    await root;
     Map<String, String> recipes = {};
-    final files = recipesDir
-        .listSync(recursive: true)
-        .whereType<File>()
-        .where((element) => element.path.endsWith(".cook"));
+    final files = await _getFiles(endsWith: ".cook");
     for (final file in files) {
       final recipe = file.readAsStringSync();
       final title = file.path.split("/").last.replaceAll(".cook", "");
@@ -36,6 +43,25 @@ class LocalStorage {
     }
     _logger.d("Read recipes: $recipes");
     return recipes;
+  }
+
+  Future<Map<String, List<Uint8List>>> getImages() async {
+    await root;
+    Map<String, List<Uint8List>> images = {};
+    // TODO: support recipe_name.<stepnumber>.png
+    final png = await _getFiles(endsWith: ".png");
+    for (final file in png) {
+      final title = file.path.split("/").last.replaceAll(".png", "");
+      final content = file.readAsBytesSync();
+      images[title] = [content];
+    }
+    final jpg = await _getFiles(endsWith: ".jpg");
+    for (final file in jpg) {
+      final title = file.path.split("/").last.replaceAll(".jpg", "");
+      final content = file.readAsBytesSync();
+      images[title] = [content];
+    }
+    return images;
   }
 
   Future<bool> isEmpty() async {
